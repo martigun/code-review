@@ -1,0 +1,66 @@
+
+%
+% Title: pdf_template.txt
+%
+% Author: G. Martin
+%
+% Desc: This document contains all of the boilerplate text to create a
+% TEX certificate, which can then be converted into a PDF.
+% Any variable enclosed in double-parentheses is meant to
+% be replaced within PHP.
+%
+
+\documentclass[landscape]{article} %set the page to landscape
+\usepackage{graphicx} %for signature.jpg
+\usepackage[utf8]{inputenc}
+\pagenumbering{gobble} %turn off page numbering
+\usepackage[margin=0.75in]{geometry}
+
+\begin{document}
+	
+	
+		\begin{center}
+		
+			\line(1,0){650} \\
+			\line(1,0){650} \\
+			
+			\vspace{0.1in}
+			\huge{ GS Warriors } \\
+			\Large{ 456 Gold St. } \\
+			\Large{ San Francisco, CA } \\
+			\vspace{0.1in}
+			
+			{\fontsize{36pt}{36pt}\selectfont
+				\includegraphics[height=0.5in]{star.png}
+				Employee of the Month
+				\includegraphics[height=0.5in]{star.png}\\
+				\vspace{0.2in}
+			}
+			\Large{ This certificate presented to: } \\
+			\line(1,0){400} \\
+			\vspace{0.1in}
+			{\fontsize{40pt}{40pt}\selectfont
+				Draymond Green \\
+			}
+			\line(1,0){400} \\
+			\vspace{0.1in}
+			\Large{ Way to support Steph! } \\
+			\vspace{0.2in}
+			\huge{ Awarded on: March 4, 2015 } \\
+			
+			\vspace{0.3in}
+			\Large{
+				\begin{tabular}{p{2.25in}p{4in}r}
+					Presented by: &  & Certified Timestamp: \\
+					Test User &  & 2016-06-06 10:11:02 PST \\
+					\includegraphics[height=1in]{/nfs/stak/students/f/fodrocyj/public_html/CS419-Rho/signature_files/BLANK.jpg} &  & Certificate by Kudosizer!
+				\end{tabular}
+			}
+			\vspace{0.1in}
+			
+			\line(1,0){650} \\
+			\line(1,0){650} \\
+			
+		\end{center}
+
+\end{document}

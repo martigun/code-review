@@ -1,0 +1,82 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>AssignAJAX</title>
+	<link rel="stylesheet" href="assign04.css" type="text/css">
+    
+</head>
+<body>
+    <h1>Activity: Ajax Interactions</h1>
+	<p>Gunnar Martin</p>
+	<p>Winter 2016</p>
+	<p>CS 290</p>
+
+	<form id="openWeather">
+		<fieldset>
+			<legend>Open Weather App</legend>
+			
+			<div class="form_box">
+				<label>City input:
+					<input type="text" name="city_input" id="city_input">
+				</label>
+			</div>
+			
+			<div>
+				<button id="cityButton" type="button">Get City Weather</button>
+			</div>
+			<br>
+			
+			<div class="form_box">
+				<label>USA Zip input:
+					<input type="number" name="zip_input" id="zip_input">
+				</label>
+			</div>	
+	
+			<div>
+				<button id="zipButton" type="button">Get Zip Weather</button>
+			</div>
+			
+			<br>
+			<div>RESULTS (see console for JSON objects):</div>
+			<br>
+			<div id="weatherResults">[weather results go here]</div>
+		</fieldset>
+	</form>
+	
+	<form id="httpbin">
+		<fieldset>
+			<legend>Open Weather App</legend>
+			
+			<div class="form_box">
+				<label>Data input:
+					<input type="text" name="data_input" id="data_input" size="100">
+				</label>
+			</div>
+			
+			<div>
+				<button id="popDataButton" type="button">Pre-Populate Sample JSON Data</button>
+			</div>
+			<br>
+		
+	
+			<div>
+				<button id="sendData" type="button">Send Data</button>
+			</div>
+			
+			<br>
+			<div>SENT:</div>
+			<br>
+			<div id="binSent">[data sent goes here]</div>
+			
+			<br>
+			<div>RECIEVED FROM HTTPBIN (see console for JSON objects):</div>
+			<br>
+			<div id="binResults">[http bin results go here]</div>
+		</fieldset>
+	</form>
+
+
+    <script src="assign04.js"></script>
+</body>
+</html>
