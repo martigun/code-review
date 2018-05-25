@@ -1,0 +1,22 @@
+MAXL> Execute Calculation On Database 'DIVPLN'.'DIVPLN'
+   2> With Local Script_File 'CSC\zFlip_DIV_Fcst_Part1ACtoDI.csc' POV "
+   3> CrossJoin({Descendants([Profit_And_Loss], [3101100].level)},
+   4> CrossJoin({Descendants([RptCat_PandL], [999999].level)},
+   5> CrossJoin({Descendants([DeltaConsol], [P0790ATG].level)},
+   6> CrossJoin({[FY16]},
+   7> CrossJoin({[Jan]:[Dec]},
+   8> CrossJoin({[Current_Fcst]},
+   9> CrossJoin({[Local],[USD]},
+  10> {[Working],[Final]}
+  11> )))))))"
+  12> SourceRegion "{[Acctg_Changes], [Div_Input]}"
+  13> ;
+
+ OK/INFO - 1270041 - For better performance, increase the size of application cache (e.g. alter application <app> set cache_size <size>MB).
+ OK/INFO - 1270041 - For better performance, increase the size of application cache (e.g. alter application <app> set cache_size <size>MB).
+ OK/INFO - 1270041 - For better performance, increase the size of application cache (e.g. alter application <app> set cache_size <size>MB).
+ OK/INFO - 1270041 - For better performance, increase the size of application cache (e.g. alter application <app> set cache_size <size>MB).
+ OK/INFO - 1300006 - Essbase generated [3.18535e+06] cells.
+ OK/INFO - 1013372 - The elapsed time of the custom calculation is [46.06] seconds.
+ OK/INFO - 1241187 - Custom Calculation Completed on Database ['DIVPLN'.'DIVPLN'].
+

@@ -1,0 +1,28 @@
+/* -- Intersections -- */
+
+/* store dimensions */
+/* {Descendants([Region], [Region].levels(0) )} */
+/* {Descendants([Time], [Time].levels(0) )} */
+/* {Descendants([Scenario], [Scenario].levels(0) )} */
+
+/* dynamic dimensions */
+/* {UDA([Measures], \"M_Store\")} */
+/* {UDA([View], \"V_Store\")} */
+
+Execute Allocation Process On Database 'CEODASH_FINREV'.'CEODASH_FINREV'
+
+/* POV: applies to SOURCE and TARGET */
+With POV "
+CrossJoin({Descendants([Time], [Time].levels(0) )},
+CrossJoin({UDA([Measures], \"M_Store\")},
+CrossJoin({Descendants([Region], [Region].levels(0) )},
+{UDA([View], \"V_Store\")}
+)))"
+
+/* SOURCE: Amount is a tuple (one cell) */
+Amount "([&EC_Source_Flash])"
+
+/* TARGET: Target is a tuple (one cell) */
+Target "([&EC_Target_Flash])"
+
+Range "" Spread;

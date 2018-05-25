@@ -1,0 +1,63 @@
+
+// --------- Formatting ---------
+
+{SUPEMPTYROWS} //suppress missing rows and zero rows
+{NOINDENTGEN} //do not indent
+{ROWREPEAT} //repeat all members each row
+{SUPHEADING} //remove blank space at top
+{TABDELIMIT} //delimit with tabs, not spaces
+{SUPCOMMAS} //no commas in numbers
+{DECIMAL 2} //use 2 decimal places
+{SUPBRACKETS} //use "-" instead of "()" for negative numbers
+
+// Year and Period become one column
+{MASK 4 "-"} //add in delimiter between year and month
+
+// Define the order of dimensions (Amount will be last)
+// So 9 dimensions make 8 columns, plus DATA column (col 9), plus CALC column (col 10)
+<ROW (Year, Period, Scenario, Version, Currency, DataType, Account, Division, RptCat) 
+
+// --------- Common Dimensions ---------
+
+// {Dimension(s): Year Scenario}
+"FY15" "Actual"
+// {Dimension(s): DataType Version Currency RptCat}
+"Mgmt_View_Incl_PYAdj" "Final" "USD" "RptCat"
+
+// {Dimension(s): Year Period}
+"QTD-Mar" "QTD-Jun" "QTD-Sep" "QTD-Dec"
+
+// {Dimension(s): Division}
+<LINK(<CHILDREN("DeltaMainlineCASM") AND NOT <MEMBER("COHCASMAlt"))
+<CHILDREN "COHCASMAlt"
+<CHILDREN "DeltaRegionalCASM"
+
+// --------- Data Set #1: Total Expense ---------
+
+// calculate CALC column (col 10) = (col 9)
+{CALCULATE COLUMN "CALC" = 9}
+
+// {Dimension(s): Account}
+<CHILDREN "E78900"
+
+// End this data set
+    ! 
+
+// --------- Data Set #2: Removal of certain items from Expense ---------
+
+// calculate CALC column (col 10) = (col 9)*-1
+{CALCULATE COLUMN "CALC" = 9 * -1.}
+
+// {Dimension(s): Account}
+"E77000"
+"E46000"
+"E42800"
+"E69600"
+"7212305"
+"6101104"
+"7212516"
+"7301101"
+
+// End this data set
+    ! 
+

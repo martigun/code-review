@@ -1,0 +1,27 @@
+
+/* Copy data using file: $cscFile */
+/* Use all dimensions */
+/* Excluding: DataType */
+
+login 'epmautomation' 'e3m@to15' on $clusterName;
+
+Spool On To $batchLogFile;
+
+/* Copy intersection */
+Execute Calculation On Database $appName.$dbName
+With Local Script_File $cscFile POV "
+CrossJoin($currentAccount,
+CrossJoin($currentRptCat,
+CrossJoin($currentDivision,
+CrossJoin($currentYear,
+CrossJoin($currentPeriod,
+CrossJoin($currentScenario,
+CrossJoin($currentCurrency,
+$currentVersion
+)))))))"
+SourceRegion "$sourceRegion"
+;
+
+Spool Off;
+
+Logout;
