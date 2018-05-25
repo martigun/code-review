@@ -1,0 +1,90 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html>
+<head>
+<title>Skywalker Airlines</title>
+</head>
+<body>
+
+<h1>Skywalker Airlines</h1>
+<a href="Main.html">|   HOME   |</a>
+
+<div>
+
+<form method="post" action="TU_Delete_Code_2.php"> 
+	<fieldset>
+		<legend>Applicable Ticket Number:</legend>
+			<select name="TicketID">
+<?php
+//Turn on error reporting
+ini_set('display_errors', 'On');
+//Connects to the database
+$mysqli = new mysqli("oniddb.cws.oregonstate.edu","martigun-db","C3ffN7b6zMGsZycs","martigun-db");
+
+if(!($stmt = $mysqli->prepare(
+	"SELECT TicketID FROM Ticket WHERE TicketID = ?;"))){
+	echo "Prepare failed: "  . $stmt->errno . " " . $stmt->error;
+}
+if(!($stmt->bind_param("i",$_POST['TicketID']))){
+	echo "Bind failed: "  . $stmt->errno . " " . $stmt->error;
+}
+if(!$stmt->execute()){
+	echo "Execute failed: "  . $stmt->errno . " " . $stmt->error;
+}
+
+if(!$stmt->bind_result($rs1)){
+	echo "Bind failed: "  . $mysqli->connect_errno . " " . $mysqli->connect_error;
+}
+
+while($stmt->fetch()){
+	echo '<option value=" ' . $rs1 . ' ">' . $rs1 . '</option>\n';
+}
+?>
+		</select>
+	</fieldset>
+	
+	<fieldset>
+		<legend>Select an Upgrade to Delete on this Ticket</legend>
+			<select name="UpgradeID">
+<?php
+//Turn on error reporting
+ini_set('display_errors', 'On');
+//Connects to the database
+$mysqli = new mysqli("oniddb.cws.oregonstate.edu","martigun-db","C3ffN7b6zMGsZycs","martigun-db");
+
+if(!($stmt = $mysqli->prepare(
+	"SELECT
+	TicketUpgrade.UpgradeID,
+	Upgrade.UpgradeName
+	FROM TicketUpgrade
+	LEFT JOIN Upgrade
+	ON TicketUpgrade.UpgradeID = Upgrade.UpgradeID
+	WHERE TicketID = ?;"))){
+	echo "Prepare failed: "  . $stmt->errno . " " . $stmt->error;
+}
+if(!($stmt->bind_param("i",$_POST['TicketID']))){
+	echo "Bind failed: "  . $stmt->errno . " " . $stmt->error;
+}
+if(!$stmt->execute()){
+	echo "Execute failed: "  . $stmt->errno . " " . $stmt->error;
+}
+
+if(!$stmt->bind_result($rs1,$rs2)){
+	echo "Bind failed: "  . $mysqli->connect_errno . " " . $mysqli->connect_error;
+}
+
+while($stmt->fetch()){
+	echo '<option value=" ' . $rs1 . ' ">' . $rs1 . ' - ' . $rs2 . '</option>\n';
+}
+?>
+		</select>
+	</fieldset>
+	
+	<p><input type="submit" /></p>
+</form>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,249 @@
+#!/bin/bash
+
+#set up variable for usage string
+usg="Usage: stats {-rows|-cols} [file]"
+
+#throw error for the following situations
+#and direct err stmt to stderr
+#if there are no arugments
+if [ $# -eq 0 ]; then
+
+	#exit the program
+	echo "$usg" >&2; exit 1
+
+#if there are more than 2 arguments
+elif [ $# -gt 2 ]; then
+	
+	#exit the program
+	echo "$usg" >&2; exit 1
+fi
+
+#set $1 to arg1 and take left 2 chars
+arg1=$1; arg1=${arg1:0:2}
+
+#Check to make sure first arg is valid
+if [ $arg1 = "-r" ];then
+	calc_type="-r"
+elif [ $arg1 = "-c" ];then
+	calc_type="-c"
+else
+	#if neither of these are met
+	#then exit the program
+	echo "$usg" >&2; exit 1
+fi
+
+#establish temp files
+TMP0="./TMP0_$$"; touch $TMP0
+TMP1="./TMP1_$$"; touch $TMP1
+TMP2="./TMP2_$$"; touch $TMP2
+TMP3="./TMP3_$$"; touch $TMP3
+TMP4="./TMP4_$$"; touch $TMP4
+TMP5="./TMP5_$$"; touch $TMP5
+rm_temps="rm -f $TMP0 $TMP1 $TMP2 $TMP3 $TMP4 $TMP5"
+
+
+#trap any errors and remove the temp files
+trap "$rm_temps; exit 1" INT HUP TERM
+
+#if there are 2 arugments
+if [ $# -eq 2 ]; then
+	
+	#if file is not readable or does not exist
+	if [ ! -r "$2" ]; then
+		
+		#print cannot read and exit
+		echo "stats: cannot read $2" >&2
+		$rm_temps; exit 1
+	fi
+
+	#read $2 into TMP0
+	while read curr_line; do
+		echo "$curr_line"
+	done < $2 > $TMP0
+else
+	#if there is 1 argument
+	#read standard input into TMP0
+	while read curr_line; do
+		echo "$curr_line"
+	done > $TMP0
+fi
+
+#read in the top line and print to file
+read top_line < $TMP0; echo "$top_line" > $TMP1
+
+#get row and col count
+col_count=`wc -w < $TMP1`
+row_count=`wc -l < $TMP0`
+
+#if working with Rows...
+if [ $arg1 = "-r" ];then
+	
+	#see if the value count is odd
+	count_is_odd=`expr $col_count % 2`
+
+	#Get mid_pos for rounding
+	mid_pos=`expr $col_count / 2`
+	
+	#if the count is odd, add +1 to the mid col
+	if [ $count_is_odd -eq 1 ]; then
+		mid_pos=`expr $mid_pos + 1`
+	fi
+
+	#print headers to terminal
+	echo -e "Average\tMedian"
+	
+	#create an idx for output
+	idx=1
+		
+	#read each line seperately
+	while read curr_line; do
+
+		#write current line to TMP1 file
+		echo "$curr_line" > $TMP1
+	
+		#set num variables
+		i=1; sum=0; mod=0; avg=0; med=0
+	
+		#loop thru each val in this line
+		while [ $i -le $col_count ]; do
+			
+			#set val to current val
+			#note that cut requires a file	
+			val=`cut -f $i $TMP1`
+		
+			#add sum
+			sum=`expr $sum + $val`
+		
+			#increment $i
+			i=`expr $i + 1`
+
+			#write val to TMP2
+			echo -e "$val"
+		done > $TMP2
+
+		#copy sorted TMP2 into TMP3
+		sort -n $TMP2 > $TMP3	
+	
+		#do calcs for average
+		mod=`expr $sum % $col_count`
+		avg=`expr $sum / $col_count`
+		
+		#add +1 to avg if mod is ge the mid_pos
+		if [ $mod -ge $mid_pos ]; then
+			avg=`expr $avg + 1`
+		fi
+		
+		#set mid_pos_med for median calc
+		mid_pos_med=$mid_pos
+		
+		#if the count is even...
+		if [ $count_is_odd -eq 0 ]; then
+			
+			#add+1 to the middle position
+			mid_pos_med=`expr $mid_pos + 1`
+		fi	
+
+		#get the median
+		med=`head -$mid_pos_med $TMP3 | tail -1`
+		
+		#print row idx, avg and median
+		echo -e "$avg\t$med"
+
+		#increment idx
+		idx=`expr $idx + 1`	
+	done < $TMP0 #done reading this line
+fi #end if working with rows
+
+#if working with columns...
+if [ $arg1 = "-c" ];then
+	
+	#see if the value count is odd
+	count_is_odd=`expr $row_count % 2`
+
+	#Get mid_pos for rounding
+	mid_pos=`expr $row_count / 2`
+	
+	#if the count is odd, add +1 to the mid pos
+	if [ $count_is_odd -eq 1 ]; then
+		mid_pos=`expr $mid_pos + 1`
+	fi
+
+	#print headers to terminal
+	#echo -e "Column\tAvg\tMedian"
+	
+	#set i (the counter)
+	i=1
+	
+	#Outer loop: a for loop through each column
+	while [ $i -le $col_count ]; do
+		
+		#set num variables
+		sum=0; mod=0; avg=0; med=0
+		
+		#Store this column in TMP1
+		cut -f $i $TMP0 > $TMP1 
+		
+		#read thru each value in TMP1
+		while read curr_line; do
+			
+			#set val to current val
+			val=$curr_line
+		
+			#add sum
+			sum=`expr $sum + $val`
+		done < $TMP1			
+		
+		#copy TMP1 sorted to TMP3
+		sort -n $TMP1 > $TMP3	
+	
+		#do calcs for average
+		mod=`expr $sum % $row_count`
+		avg=`expr $sum / $row_count`
+	
+		#add +1 to avg if mod is ge the mid_pos
+		if [ $mod -ge $mid_pos ]; then
+			avg=`expr $avg + 1`
+		fi
+		
+		#set mid_pos_med for med calc
+		mid_pos_med=$mid_pos
+		
+		#if the count is even...
+		if [ $count_is_odd -eq 0 ]; then
+			
+			#add+1 to the middle position
+			mid_pos_med=`expr $mid_pos + 1`
+		fi	
+
+		#get the median
+		med=`head -$mid_pos_med $TMP3 | tail -1`
+		
+		#print col idx, avg and median
+		echo -e "$avg" >> $TMP4
+		echo -e "$med" >> $TMP5
+
+		#increment i for next column
+		i=`expr $i + 1`
+	done #end of this column	
+
+	#output Averages to terminal
+	echo "Averages:"
+	#read through TMP4 for avg and tab to terminal
+	while read curr_line; do
+		echo -e -n "$curr_line\t"
+	done < $TMP4
+	echo
+
+	#output Medians to terminal
+		echo -e "Medians:"
+	#read through TMP5 for med and tab to terminal
+	while read curr_line; do
+		echo -e -n "$curr_line\t"
+	done < $TMP5
+	echo
+
+fi #end if working with columns
+
+#remove temp files
+$rm_temps
+
